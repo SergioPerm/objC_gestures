@@ -43,7 +43,7 @@
     UIPinchGestureRecognizer* pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinch:)];
     
     [self.view addGestureRecognizer:pinchGesture];
-    
+    //adsf
 }
 
 #pragma mark - Methods
