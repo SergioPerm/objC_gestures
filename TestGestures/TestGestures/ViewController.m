@@ -8,10 +8,11 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) UIView* testView;
 @property (assign, nonatomic) CGFloat testViewScale;
+@property (assign, nonatomic) CGFloat testViewRotation;
 
 @end
 
@@ -42,7 +43,19 @@
  
     UIPinchGestureRecognizer* pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinch:)];
     
+    pinchGesture.delegate = self;
+    
     [self.view addGestureRecognizer:pinchGesture];
+    
+    UIRotationGestureRecognizer* rotateGesture = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(handleRotate:)];
+    
+    rotateGesture.delegate = self;
+    
+    [self.view addGestureRecognizer:rotateGesture];
+ 
+    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    
+    [self.view addGestureRecognizer:panGesture];
     
 }
 
@@ -107,6 +120,43 @@
  
     self.testView.transform = newTransform;
     self.testViewScale = pinchGesture.scale;
+}
+
+- (void) handleRotate:(UIRotationGestureRecognizer*) rotateGesture {
+    
+    NSLog(@"handle rotate %1.3f", rotateGesture.rotation);
+    
+    if (rotateGesture.state == UIGestureRecognizerStateBegan) {
+        self.testViewRotation = 0.f;
+    }
+    
+    CGFloat newRotation = rotateGesture.rotation - self.testViewRotation;
+    
+    CGAffineTransform currentTransform = self.testView.transform;
+    CGAffineTransform newTransform = CGAffineTransformRotate(currentTransform, newRotation);
+    
+    self.testView.transform = newTransform;
+    self.testViewRotation = rotateGesture.rotation;
+    
+}
+
+- (void) handlePan:(UIPanGestureRecognizer*) panGesture {
+    
+    //NSLog(@"handle pan %1.3f", panGesture.ro);
+    
+    self.testView.center = [panGesture locationInView:self.view];
+    
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+    shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    
+    
+    
+    return YES;
+    
 }
 
 @end
