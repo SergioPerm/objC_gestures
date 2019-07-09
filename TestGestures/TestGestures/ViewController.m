@@ -54,8 +54,22 @@
     [self.view addGestureRecognizer:rotateGesture];
  
     UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    panGesture.delegate = self;
     
     [self.view addGestureRecognizer:panGesture];
+    
+    //swipes
+    UISwipeGestureRecognizer* horizontSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeHorizont:)];
+    horizontSwipeGesture.direction = UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionLeft;
+    horizontSwipeGesture.delegate = self;
+    
+    [self.view addGestureRecognizer:horizontSwipeGesture];
+    
+    UISwipeGestureRecognizer* verticalSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeVertical:)];
+    verticalSwipeGesture.direction = UISwipeGestureRecognizerDirectionUp | UISwipeGestureRecognizerDirectionDown;
+    verticalSwipeGesture.delegate = self;
+    
+    [self.view addGestureRecognizer:verticalSwipeGesture];
     
 }
 
@@ -148,6 +162,18 @@
     
 }
 
+- (void) handleSwipeHorizont:(UISwipeGestureRecognizer*) swipeGesture {
+    
+    NSLog(@"horizont swipe");
+    
+}
+
+- (void) handleSwipeVertical:(UISwipeGestureRecognizer*) swipeGesture {
+    
+    NSLog(@"vert swipe");
+    
+}
+
 #pragma mark - UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
@@ -156,6 +182,13 @@
     
     
     return YES;
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+    shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+ 
+    return [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UISwipeGestureRecognizer class]];
     
 }
 
